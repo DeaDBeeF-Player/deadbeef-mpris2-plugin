@@ -4,13 +4,9 @@ m4_define([plugin_version_major], [1])
 m4_define([plugin_version_minor], [15])
 m4_define([plugin_version], [plugin_version_major.plugin_version_minor])
 
-AC_PREREQ([2.69])
 AC_INIT([deadbeef-mpris2-plugin], [plugin_version], [peterlamby@web.de], [DeaDBeeF MPRIS2 Plugin], [https://github.com/Serranya/deadbeef-mpris2-plugin])
-AC_CONFIG_SRCDIR([src/mpris.c])
-AC_CONFIG_AUX_DIR([build-aux])
-AC_CONFIG_MACRO_DIR([m4])
 
-AM_INIT_AUTOMAKE([foreign -Wall -Werror subdir-objects dist-xz no-dist-gzip])
+AM_INIT_AUTOMAKE([foreign -Wall -Werror subdir-objects dist-xz no-dist-gzip silent-rules])
 AM_SILENT_RULES([yes])
 
 dnl Override $PACKAGE to make $pkglibdir use deadbeef search path
@@ -29,10 +25,7 @@ AC_DEFINE(PLUGIN_VERSION_MINOR, [plugin_version_minor],
 
 LT_INIT
 
-PKG_CHECK_MODULES([GLIB_DEPS], [glib-2.0], , AC_MSG_ERROR([glibc-2 is required for this package]))
-PKG_CHECK_MODULES([GIO_DEPS], [gio-2.0], , AC_MSG_ERROR([gio-2 is required for this package]))
-PKG_CHECK_MODULES([GIOUNIX_DEPS], [gio-unix-2.0], , AC_MSG_ERROR([gio-unix-2 is required for this package]))
-PKG_CHECK_MODULES([GTHREAD_DEPS], [gthread-2.0], , AC_MSG_ERROR([gthread-2 is required for this package]))
+PKG_CHECK_MODULES([MPRIS_DEPS], [glib-2.0>=2.26 gio-2.0 gio-unix-2.0 gthread-2.0])
 
 AS_IF([test "x$ac_cv_prog_cc_c99" = "xno"], AC_MSG_ERROR([C99 Support is required]))
 
