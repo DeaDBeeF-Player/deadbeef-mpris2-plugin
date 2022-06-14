@@ -1,4 +1,6 @@
 #include <glib.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "mprisServer.h"
 #include "logging.h"
