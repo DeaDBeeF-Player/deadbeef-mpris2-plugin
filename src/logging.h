@@ -1,15 +1,9 @@
 #ifndef LOGGING_H_
 #define LOGGING_H_
 
-void logDebug (const char *fmt, ...);
-void logError (const char *fmt, ...);
-
-#ifndef MPRIS__DEBUG
-	#define debug(...)
-#else
-	#define debug(...) logDebug(__VA_ARGS__)
-#endif
-
+#define logDebug(...) { deadbeef->log_detailed (&plugin.plugin, DDB_LOG_LAYER_INFO, __VA_ARGS__); }
+#define logError(...) { deadbeef->log_detailed (&plugin.plugin, 0, __VA_ARGS__); }
+#define debug(...) logDebug(__VA_ARGS__)
 #define error(...) logError(__VA_ARGS__)
 
 #endif

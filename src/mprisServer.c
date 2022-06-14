@@ -12,6 +12,9 @@
 #include "logging.h"
 #include "mprisServer.h"
 
+extern DB_functions_t *deadbeef;
+extern DB_misc_t plugin;
+
 #define BUS_NAME "org.mpris.MediaPlayer2.DeaDBeeF"
 #define OBJECT_NAME "/org/mpris/MediaPlayer2"
 #define PLAYER_INTERFACE "org.mpris.MediaPlayer2.Player"
@@ -638,6 +641,9 @@ static int onPlayerSetPropertyHandler(GDBusConnection *connection, const char *s
 	DB_functions_t *deadbeef = ((struct MprisData *)userData)->deadbeef;
 
 	if (strcmp(propertyName, "LoopStatus") == 0) {
+		if (deadbeef->conf_get_int("mpris.disable_shuffle_repeat", 0)) {
+            return FALSE;
+        }
 		char *status;
 		g_variant_get(value, "s", &status);
 		if (status != NULL) {
@@ -655,6 +661,9 @@ static int onPlayerSetPropertyHandler(GDBusConnection *connection, const char *s
 	} else if (strcmp(propertyName, "Rate") == 0) {
 		debug("Setting the rate is not supported");
 	} else if (strcmp(propertyName, "Shuffle") == 0) {
+		if (deadbeef->conf_get_int("mpris.disable_shuffle_repeat", 0)) {
+            return FALSE;
+        }
 		if (g_variant_get_boolean(value)) {
 			deadbeef->conf_set_int("playback.order", PLAYBACK_ORDER_RANDOM);
 		} else {

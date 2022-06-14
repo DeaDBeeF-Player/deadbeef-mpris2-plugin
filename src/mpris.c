@@ -3,9 +3,11 @@
 #include "mprisServer.h"
 #include "logging.h"
 
+DB_functions_t *deadbeef;
+DB_misc_t plugin;
+
 static GThread *mprisThread;
 static struct MprisData mprisData;
-
 static int oldLoopStatus = -1;
 static int oldShuffleStatus = -1;
 
@@ -154,6 +156,12 @@ static int handleEvent (uint32_t id, uintptr_t ctx, uint32_t p1, uint32_t p2) {
 
 				mprisData.previousAction = mprisData.deadbeef->conf_get_int(SETTING_PREVIOUS_ACTION, PREVIOUS_ACTION_PREV_OR_RESTART);
 			}
+            if (deadbeef->conf_get_int ("vfs_curl.trace", 0)) {
+                plugin.plugin.flags |= DDB_PLUGIN_FLAG_LOGGING;
+            }
+            else {
+                plugin.plugin.flags &= ~DDB_PLUGIN_FLAG_LOGGING;
+            }
 			break;
 		default:
 			break;
@@ -166,7 +174,10 @@ static int handleEvent (uint32_t id, uintptr_t ctx, uint32_t p1, uint32_t p2) {
 #define XSTR(x) STR(x)
 
 static const char settings_dlg[] =
-	"property \"\\\"Previous\\\" action behavior\" select[2] " SETTING_PREVIOUS_ACTION " " XSTR(PREVIOUS_ACTION_PREV_OR_RESTART) " \"Previous\" \"Previous or restart current track\";";
+	"property \"\\\"Previous\\\" action behavior\" select[2] " SETTING_PREVIOUS_ACTION " " XSTR(PREVIOUS_ACTION_PREV_OR_RESTART) " \"Previous\" \"Previous or restart current track\";"
+    "property \"Enable logging\" checkbox mpris.trace 0;\n"
+    "property \"Disable shuffle and repeat\" checkbox mpris.disable_shuffle_repeat 0;\n"
+;
 
 
 DB_misc_t plugin = {
@@ -205,8 +216,8 @@ DB_misc_t plugin = {
 };
 
 DB_plugin_t * mpris_load (DB_functions_t *ddb) {
+	deadbeef = mprisData.deadbeef = ddb;
 	debug("Loading...");
-	mprisData.deadbeef = ddb;
 
 	return DB_PLUGIN(&plugin);
 }
