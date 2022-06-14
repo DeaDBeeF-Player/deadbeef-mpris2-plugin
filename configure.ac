@@ -6,7 +6,7 @@ m4_define([plugin_version], [plugin_version_major.plugin_version_minor])
 
 AC_INIT([deadbeef-mpris2-plugin], [plugin_version], [peterlamby@web.de], [DeaDBeeF MPRIS2 Plugin], [https://github.com/Serranya/deadbeef-mpris2-plugin])
 
-AM_INIT_AUTOMAKE([foreign -Wall -Werror subdir-objects dist-xz no-dist-gzip])
+AM_INIT_AUTOMAKE([foreign -Wall -Werror subdir-objects dist-xz no-dist-gzip silent-rules])
 AM_SILENT_RULES([yes])
 
 dnl Override $PACKAGE to make $pkglibdir use deadbeef search path
@@ -25,7 +25,7 @@ AC_DEFINE(PLUGIN_VERSION_MINOR, [plugin_version_minor],
 
 LT_INIT
 
-PKG_CHECK_MODULES([MPRIS_DEPS], [glib-2.0>=2.26 gio-2.0 gio-unix-2.0 gthread-2.0])
+PKG_CHECK_MODULES([MPRIS_DEPS], [glib-2.0>=2.22 gio-2.0 gio-unix-2.0 gthread-2.0])
 
 AS_IF([test "x$ac_cv_prog_cc_c99" = "xno"], AC_MSG_ERROR([C99 Support is required]))
 
