@@ -219,7 +219,6 @@ DB_misc_t plugin = {
 
 DB_plugin_t * mpris_load (DB_functions_t *ddb) {
 	deadbeef = mprisData.deadbeef = ddb;
-	debug("Loading...");
 
 	return DB_PLUGIN(&plugin);
 }
