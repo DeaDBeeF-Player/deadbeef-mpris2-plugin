@@ -6,7 +6,7 @@ m4_define([plugin_version], [plugin_version_major.plugin_version_minor])
 
 AC_INIT([deadbeef-mpris2-plugin], [plugin_version], [peterlamby@web.de], [DeaDBeeF MPRIS2 Plugin], [https://github.com/Serranya/deadbeef-mpris2-plugin])
 
-AM_INIT_AUTOMAKE([foreign -Wall -Werror subdir-objects dist-xz no-dist-gzip silent-rules])
+AM_INIT_AUTOMAKE([foreign -Wall -Werror subdir-objects dist-xz no-dist-gzip])
 AM_SILENT_RULES([yes])
 
 dnl Override $PACKAGE to make $pkglibdir use deadbeef search path
