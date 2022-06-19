@@ -25,7 +25,7 @@ AC_DEFINE(PLUGIN_VERSION_MINOR, [plugin_version_minor],
 
 LT_INIT
 
-PKG_CHECK_MODULES([MPRIS_DEPS], [glib-2.0>=2.22 gio-2.0 gio-unix-2.0 gthread-2.0])
+PKG_CHECK_MODULES([MPRIS_DEPS], [glib-2.0 >= 2.22 gio-2.0 gio-unix-2.0 gthread-2.0])
 
 AS_IF([test "x$ac_cv_prog_cc_c99" = "xno"], AC_MSG_ERROR([C99 Support is required]))
 
