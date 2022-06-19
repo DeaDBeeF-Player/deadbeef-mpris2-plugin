@@ -153,7 +153,7 @@ static struct MetaFormatRecord metaFormatRecords[] = {
 };
 
 static void compileTfBytecode(DB_functions_t *deadbeef) {
-	debug("Compiling tf bytecode");
+	debug("Compiling tf bytecode\n");
 	for (struct MetaFormatRecord *record = metaFormatRecords; record->fieldName; record++) {
 		record->bytecode = deadbeef->tf_compile(record->valueFormat);
 		assert(record->bytecode);
@@ -161,7 +161,7 @@ static void compileTfBytecode(DB_functions_t *deadbeef) {
 }
 
 static void freeTfBytecode(DB_functions_t *deadbeef) {
-	debug("Freeing tf bytecode");
+	debug("Freeing tf bytecode\n");
 	for (struct MetaFormatRecord *record = metaFormatRecords; record->fieldName; record++) {
 		deadbeef->tf_free(record->bytecode);
 	}
@@ -176,7 +176,7 @@ static void coverartCallback(int error, ddb_cover_query_t *query, ddb_cover_info
 			cover_path = malloc(strlen(cover->image_filename) + prefix + 1);
 			strcpy(cover_path,"file://");
 			strcpy(cover_path + prefix, cover->image_filename);
-			debug("Loaded cover for %x, (path: %s)", query->track, cover_path);
+			debug("Loaded cover for %x, (path: %s)\n", query->track, cover_path);
 		}
 
 		// Replace cover
@@ -222,10 +222,10 @@ GVariant* getMetadataForTrack(int track_id, struct MprisData *mprisData) {
 		deadbeef->pl_lock();
 
 		sprintf(buf, "/DeaDBeeF/%d/%d", playlistIndex, id);
-		debug("get Metadata trackid: %s", buf);
+		debug("get Metadata trackid: %s\n", buf);
 		g_variant_builder_add(builder, "{sv}", "mpris:trackid", g_variant_new("o", buf));
 
-		debug("get Metadata duration: %" PRId64, duration);
+		debug("get Metadata duration: %" PRId64 "\n", duration);
 		if (duration > 0) {
 			g_variant_builder_add(builder, "{sv}", "mpris:length", g_variant_new("x", duration));
 		}
@@ -236,18 +236,18 @@ GVariant* getMetadataForTrack(int track_id, struct MprisData *mprisData) {
 
 			if (art_data->track == track) {
 				if (art_data->path) {
-					debug("cover for %s ready. Artwork is: %s", album, art_data->path);
+					debug("cover for %s ready. Artwork is: %s\n", album, art_data->path);
 					albumArtUri = art_data->path;
 				}
 				else {
-					debug("Cover not found, using default (path: %s)", art_data->default_path);
+					debug("Cover not found, using default (path: %s)\n", art_data->default_path);
 					albumArtUri = art_data->default_path;
 				}
 			}
 			else {
 				ddb_cover_query_t *artworkQuery = calloc(sizeof(ddb_cover_query_t),1);
 				if (artworkQuery) {
-					debug("getting cover for album %s", album);
+					debug("getting cover for album %s\n", album);
 					artworkQuery->_size = sizeof(ddb_cover_query_t);
 					artworkQuery->track = track;
 					artworkQuery->user_data = mprisData;
@@ -286,20 +286,20 @@ GVariant* getMetadataForTrack(int track_id, struct MprisData *mprisData) {
 			};
 
 			if (deadbeef->tf_eval(&ctx, record->bytecode, buf, buf_size) < 0) {
-				error("failed to produce string for field %s", record->fieldName);
+				error("failed to produce string for field %s\n", record->fieldName);
 				continue;
 			}
 
 			if (g_str_equal(buf, "")) {
-				debug("resulting string is empty, skipping %s field", record->fieldName);
+				debug("resulting string is empty, skipping %s field\n", record->fieldName);
 				continue;
 			}
 
-			debug("got string '%s' for field %s", buf, record->fieldName);
+			debug("got string '%s' for field %s\n", buf, record->fieldName);
 
 			GVariant *variant = record->produceVariantCb(buf);
 			if (!variant) {
-				debug("can't convert string '%s' to proper variant, skipping %s field", buf, record->fieldName);
+				debug("can't convert string '%s' to proper variant, skipping %s field\n", buf, record->fieldName);
 				continue;
 			}
 
@@ -309,7 +309,7 @@ GVariant* getMetadataForTrack(int track_id, struct MprisData *mprisData) {
 		deadbeef->pl_unlock();
 		deadbeef->pl_item_unref(track);
 	} else {
-		debug("get Metadata trackid: /org/mpris/MediaPlayer2/TrackList/NoTrack");
+		debug("get Metadata trackid: /org/mpris/MediaPlayer2/TrackList/NoTrack\n");
 		g_variant_builder_add(builder, "{sv}", "mpris:trackid", g_variant_new("o", "/org/mpris/MediaPlayer2/TrackList/NoTrack"));
 	}
 	tmp = g_variant_builder_end(builder);
@@ -363,7 +363,7 @@ static gboolean deadbeef_hasselectedorplayingtrack(struct MprisData *userData, i
 static void onRootMethodCallHandler(GDBusConnection *connection, const char *sender, const char *objectPath,
                                     const char *interfaceName, const char *methodName, GVariant *parameters,
                                     GDBusMethodInvocation *invocation, void *userData) {
-	debug("Method call on root interface. sender: %s, methodName %s", sender, methodName);
+	debug("Method call on root interface. sender: %s, methodName %s\n", sender, methodName);
 	DB_functions_t *deadbeef = ((struct MprisData *)userData)->deadbeef;
 
 	if (strcmp(methodName, "Quit") == 0) {
@@ -379,7 +379,7 @@ static void onRootMethodCallHandler(GDBusConnection *connection, const char *sen
 		}
 		g_dbus_method_invocation_return_value(invocation, NULL);
 	} else {
-		debug("Error! Unsupported method. %s.%s", interfaceName, methodName);
+		debug("Error! Unsupported method. %s.%s\n", interfaceName, methodName);
 		g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR, G_DBUS_ERROR_NOT_SUPPORTED,
                                               "Method %s.%s not supported", interfaceName, methodName);
 	}
@@ -388,7 +388,7 @@ static void onRootMethodCallHandler(GDBusConnection *connection, const char *sen
 static GVariant* onRootGetPropertyHandler(GDBusConnection *connection, const char *sender, const char *objectPath,
                                           const char *interfaceName, const char *propertyName, GError **error,
                                           void *userData) {
-	debug("Get property call on root interface. sender: %s, propertyName: %s", sender, propertyName);
+	debug("Get property call on root interface. sender: %s, propertyName: %s\n", sender, propertyName);
 	GVariant *result = NULL;
 
 	if (strcmp(propertyName, "CanQuit") == 0) {
@@ -445,8 +445,8 @@ static const GDBusInterfaceVTable rootInterfaceVTable = {
 static void onPlayerMethodCallHandler(GDBusConnection *connection, const char *sender, const char *objectPath,
                                       const char *interfaceName, const char *methodName, GVariant *parameters,
                                       GDBusMethodInvocation *invocation, void *userData) {
-	debug("Method call on Player interface. sender: %s, methodName %s", sender, methodName);
-	debug("Parameter signature is %s", g_variant_get_type_string (parameters));
+	debug("Method call on Player interface. sender: %s, methodName %s\n", sender, methodName);
+	debug("Parameter signature is %s\n", g_variant_get_type_string (parameters));
 	struct MprisData *mprisData = (struct MprisData *)userData;
 	DB_functions_t *deadbeef = mprisData->deadbeef;
 
@@ -508,7 +508,7 @@ static void onPlayerMethodCallHandler(GDBusConnection *connection, const char *s
 		const char *trackId = NULL;
 
 		g_variant_get(parameters, "(&ox)", &trackId, &position);
-		debug("Set %s position %d.", trackId, position);
+		debug("Set %s position %d.\n", trackId, position);
 
 		DB_playItem_t *track = deadbeef->streamer_get_playing_track();
 		if (track != NULL) {
@@ -542,7 +542,7 @@ static void onPlayerMethodCallHandler(GDBusConnection *connection, const char *s
 		}
 		g_dbus_method_invocation_return_value(invocation, NULL);
 	} else {
-		debug("Error! Unsupported method. %s.%s", interfaceName, methodName);
+		debug("Error! Unsupported method. %s.%s\n", interfaceName, methodName);
 		g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR, G_DBUS_ERROR_NOT_SUPPORTED,
                                               "Method %s.%s not supported", interfaceName, methodName);
 	}
@@ -551,7 +551,7 @@ static void onPlayerMethodCallHandler(GDBusConnection *connection, const char *s
 static GVariant* onPlayerGetPropertyHandler(GDBusConnection *connection, const char *sender, const char *objectPath,
                                             const char *interfaceName, const char *propertyName, GError **error,
                                             void *userData) {
-	debug("Get property call on Player interface. sender: %s, propertyName: %s", sender, propertyName);
+	debug("Get property call on Player interface. sender: %s, propertyName: %s\n", sender, propertyName);
 	DB_functions_t *deadbeef = ((struct MprisData *)userData)->deadbeef;
 	GVariant *result = NULL;
 
@@ -637,7 +637,7 @@ static GVariant* onPlayerGetPropertyHandler(GDBusConnection *connection, const c
 static int onPlayerSetPropertyHandler(GDBusConnection *connection, const char *sender, const char *objectPath,
                                       const char *interfaceName, const char *propertyName, GVariant *value,
                                       GError **error, gpointer userData) {
-	debug("Set property call on Player interface. sender: %s, propertyName: %s", sender, propertyName);
+	debug("Set property call on Player interface. sender: %s, propertyName: %s\n", sender, propertyName);
 	DB_functions_t *deadbeef = ((struct MprisData *)userData)->deadbeef;
 
 	if (strcmp(propertyName, "LoopStatus") == 0) {
@@ -647,7 +647,7 @@ static int onPlayerSetPropertyHandler(GDBusConnection *connection, const char *s
 		char *status;
 		g_variant_get(value, "s", &status);
 		if (status != NULL) {
-			debug("status is %s", status);
+			debug("status is %s\n", status);
 			if (strcmp(status, "None") == 0) {
 				deadbeef->conf_set_int("playback.loop", PLAYBACK_MODE_NOLOOP);
 			} else if (strcmp(status, "Playlist") == 0) {
@@ -659,7 +659,7 @@ static int onPlayerSetPropertyHandler(GDBusConnection *connection, const char *s
 			deadbeef->sendmessage(DB_EV_CONFIGCHANGED, 0, 0, 0);
 		}
 	} else if (strcmp(propertyName, "Rate") == 0) {
-		debug("Setting the rate is not supported");
+		debug("Setting the rate is not supported\n");
 	} else if (strcmp(propertyName, "Shuffle") == 0) {
 		if (deadbeef->conf_get_int("mpris.disable_shuffle_repeat", 0)) {
             return FALSE;
@@ -697,7 +697,7 @@ static const GDBusInterfaceVTable playerInterfaceVTable = {
 void emitVolumeChanged(float volume) {
 	GVariantBuilder *builder = g_variant_builder_new(G_VARIANT_TYPE_ARRAY);
 	volume = (volume * 0.02) + 1;
-	debug("Volume property changed: %f", volume);
+	debug("Volume property changed: %f\n", volume);
 
 	g_variant_builder_add(builder, "{sv}", "Volume", g_variant_new("d", volume));
 	GVariant *signal[] = {
@@ -714,7 +714,7 @@ void emitVolumeChanged(float volume) {
 
 void emitSeeked(float position) {
 	int64_t positionInMicroseconds = position * 1000000.0;
-	debug("Seeked to %" PRId64, positionInMicroseconds);
+	debug("Seeked to %" PRId64 "\n", positionInMicroseconds);
 
 	g_dbus_connection_emit_signal(globalConnection, NULL, OBJECT_NAME, PLAYER_INTERFACE, "Seeked",
                                   g_variant_new("(x)", positionInMicroseconds), NULL);
@@ -835,14 +835,14 @@ void emitShuffleStatusChanged(int status) {
 
 static void onBusAcquiredHandler(GDBusConnection *connection, const char *name, void *userData) {
 	globalConnection = connection;
-	debug("Bus accquired");
+	debug("Bus accquired\n");
 }
 
 static void onNameAcquiredHandler(GDBusConnection *connection, const char *name, void *userData) {
-	debug("name accquired: %s", name);
+	debug("name accquired: %s\n", name);
 	GDBusInterfaceInfo **interfaces = ((struct MprisData*)userData)->gdbusNodeInfo->interfaces;
 
-	debug("Registering" OBJECT_NAME "object...");
+	debug("Registering" OBJECT_NAME "object...\n");
 	g_dbus_connection_register_object(connection, OBJECT_NAME, interfaces[0], &rootInterfaceVTable, userData, NULL,
                                       NULL);
 
@@ -851,7 +851,7 @@ static void onNameAcquiredHandler(GDBusConnection *connection, const char *name,
 }
 
 static void onConnotConnectToBus(GDBusConnection *connection, const char *name, void *user_data){
-	error("cannot connect to bus");
+	error("cannot connect to bus\n");
 }
 
 void* startServer(void *data) {
@@ -881,6 +881,6 @@ void* startServer(void *data) {
 }
 
 void stopServer() {
-	debug("Stopping...");
+	debug("Stopping...\n");
 	g_main_loop_quit(loop);
 }

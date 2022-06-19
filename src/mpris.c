@@ -49,6 +49,7 @@ static int onDisconnect() {
 	if (mprisData.artworkData.artwork) {
 		mprisData.artworkData.artwork->cancel_queries_with_source_id(mprisData.artworkData.source_id);
 	}
+    return 0;
 }
 
 static int onConnect() {
@@ -57,7 +58,7 @@ static int onConnect() {
 	ddb_artwork_plugin_t *artworkPlugin = (ddb_artwork_plugin_t *)mprisData.deadbeef->plug_get_for_id ("artwork2");
 
 	if (artworkPlugin != NULL) {
-		debug("artwork plugin detected... album art support enabled");
+		debug("artwork plugin detected... album art support enabled\n");
 		if (artworkPlugin) {
 			mprisData.artworkData.artwork = artworkPlugin;
 			mprisData.artworkData.source_id = artworkPlugin->allocate_source_id();
@@ -70,29 +71,29 @@ static int onConnect() {
 			}
 		}
 	} else {
-		debug("artwork plugin not detected... album art support disabled");
+		debug("artwork plugin not detected... album art support disabled\n");
 	}
 
 	DB_plugin_t *hotkeysPlugin = mprisData.deadbeef->plug_get_for_id ("hotkeys");
 
 	if (hotkeysPlugin != NULL) {
-		debug("hotkeys plugin detected...");
+		debug("hotkeys plugin detected...\n");
 
 		DB_plugin_action_t *dbaction;
 
 		for (dbaction = hotkeysPlugin->get_actions (NULL); dbaction; dbaction = dbaction->next) {
 			if (strcmp(dbaction->name, "prev_or_restart") == 0) {
-				debug("prev_or_restart command detected... previous or restart support enabled");
+				debug("prev_or_restart command detected... previous or restart support enabled\n");
 				mprisData.prevOrRestart = dbaction;
 				break;
 			}
 		}
 
 		if (mprisData.prevOrRestart == NULL) {
-			debug("prev_or_restart command not detected... previous or restart support disabled");
+			debug("prev_or_restart command not detected... previous or restart support disabled\n");
 		}
 	} else {
-		debug("hotkeys plugin not detected... previous or restart support disabled");
+		debug("hotkeys plugin not detected... previous or restart support disabled\n");
 	}
 
 	return 0;
@@ -112,11 +113,11 @@ static int handleEvent (uint32_t id, uintptr_t ctx, uint32_t p1, uint32_t p2) {
 
 	switch (id) {
 		case DB_EV_SEEKED:
-			debug("DB_EV_SEEKED event received");
+			debug("DB_EV_SEEKED event received\n");
 			emitSeeked(((ddb_event_playpos_t *) ctx)->playpos);
 			break;
 		case DB_EV_TRACKINFOCHANGED:
-			debug("DB_EV_TRACKINFOCHANGED event received");
+			debug("DB_EV_TRACKINFOCHANGED event received\n");
 			emitMetadataChanged(-1, &mprisData);
 			emitCanGoChanged(&mprisData);
 			emitSeeked(deadbeef->streamer_get_playpos());
@@ -126,39 +127,39 @@ static int handleEvent (uint32_t id, uintptr_t ctx, uint32_t p1, uint32_t p2) {
 			emitCanGoChanged(&mprisData);
 			break;
 		case DB_EV_SONGSTARTED:
-			debug("DB_EV_SONGSTARTED event received");
+			debug("DB_EV_SONGSTARTED event received\n");
 			emitMetadataChanged(-1, &mprisData);
 			emitPlaybackStatusChanged(OUTPUT_STATE_PLAYING, &mprisData);
 			break;
 		case DB_EV_PAUSED:
-			debug("DB_EV_PAUSED event received");
+			debug("DB_EV_PAUSED event received\n");
 			emitPlaybackStatusChanged(p1 ? OUTPUT_STATE_PAUSED : OUTPUT_STATE_PLAYING, &mprisData);
 			break;
 		case DB_EV_STOP:
-			debug("DB_EV_STOP event received");
+			debug("DB_EV_STOP event received\n");
 			emitPlaybackStatusChanged(OUTPUT_STATE_STOPPED, &mprisData);
 			break;
 		case DB_EV_VOLUMECHANGED:
-			debug("DB_EV_VOLUMECHANGED event received");
+			debug("DB_EV_VOLUMECHANGED event received\n");
 			emitVolumeChanged(deadbeef->volume_get_db());
 			break;
 		case DB_EV_CONFIGCHANGED:
-			debug("DB_EV_CONFIGCHANGED event received");
+			debug("DB_EV_CONFIGCHANGED event received\n");
 			if (oldShuffleStatus != -1) {
 				int newLoopStatus = mprisData.deadbeef->conf_get_int("playback.loop", PLAYBACK_MODE_LOOP_ALL);
 				int newShuffleStatus = mprisData.deadbeef->conf_get_int("playback.order", PLAYBACK_ORDER_LINEAR);
 
 				if (newLoopStatus != oldLoopStatus) {
-					debug("LoopStatus changed %d", newLoopStatus);
+					debug("LoopStatus changed %d\n", newLoopStatus);
 					emitLoopStatusChanged(oldLoopStatus = newLoopStatus);
 				} if (newShuffleStatus != oldShuffleStatus) {
-					debug("ShuffleStatus changed %d", newShuffleStatus);
+					debug("ShuffleStatus changed %d\n", newShuffleStatus);
 					emitShuffleStatusChanged(oldShuffleStatus = newShuffleStatus);
 				}
 
 				mprisData.previousAction = mprisData.deadbeef->conf_get_int(SETTING_PREVIOUS_ACTION, PREVIOUS_ACTION_PREV_OR_RESTART);
 			}
-            if (deadbeef->conf_get_int ("vfs_curl.trace", 0)) {
+            if (deadbeef->conf_get_int ("mpris.trace", 0)) {
                 plugin.plugin.flags |= DDB_PLUGIN_FLAG_LOGGING;
             }
             else {
