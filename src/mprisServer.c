@@ -642,8 +642,8 @@ static int onPlayerSetPropertyHandler(GDBusConnection *connection, const char *s
 
 	if (strcmp(propertyName, "LoopStatus") == 0) {
 		if (deadbeef->conf_get_int("mpris.disable_shuffle_repeat", 0)) {
-            return FALSE;
-        }
+			return TRUE;
+		}
 		char *status;
 		g_variant_get(value, "s", &status);
 		if (status != NULL) {
@@ -662,8 +662,8 @@ static int onPlayerSetPropertyHandler(GDBusConnection *connection, const char *s
 		debug("Setting the rate is not supported\n");
 	} else if (strcmp(propertyName, "Shuffle") == 0) {
 		if (deadbeef->conf_get_int("mpris.disable_shuffle_repeat", 0)) {
-            return FALSE;
-        }
+			return TRUE;
+		}
 		if (g_variant_get_boolean(value)) {
 			deadbeef->conf_set_int("playback.order", PLAYBACK_ORDER_RANDOM);
 		} else {
