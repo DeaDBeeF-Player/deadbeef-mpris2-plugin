@@ -295,6 +295,13 @@ GVariant* getMetadataForTrack(int track_id, struct MprisData *mprisData) {
 				continue;
 			}
 
+            size_t len = strlen(buf);
+			const char *end = NULL;
+			if (!(g_utf8_validate (buf, -1, &end) && (end == buf + len))) {
+				debug("meta string for '%s' failed utf8 validation: %s\n", record->fieldName, buf);
+				continue;
+			}
+
 			debug("got string '%s' for field %s\n", buf, record->fieldName);
 
 			GVariant *variant = record->produceVariantCb(buf);
