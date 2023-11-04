@@ -19,19 +19,13 @@ will only support version two.
 	interface.
 
 ===== How to install =====
-==== For Developers ====
-- git clone https://github.com/Serranya/deadbeef-mpris2-plugin.git
+- git clone this repository, or download and uncompress the latest release from Releases
+  section on github
 - cd deadbeef-mpris2-plugin
 - autoreconf --install
 - ./configure
 - make install
 
-==== For Users ====
-- Grab the tarball from https://github.com/Serranya/deadbeef-mpris2-plugin/releases/download/v1.14/deadbeef-mpris2-plugin-1.14.tar.xz
-- tar -xf deadbeef-mpris2-plugin-1.14.tar.xz
-- cd deadbeef-mpris-plugin-1.14
-- ./configure
-- make install
 
 ===== Contributing =====
 Just use common sense...
