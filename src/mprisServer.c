@@ -672,7 +672,7 @@ static int onPlayerSetPropertyHandler(GDBusConnection *connection, const char *s
 			return TRUE;
 		}
 		if (g_variant_get_boolean(value)) {
-			deadbeef->conf_set_int("playback.order", PLAYBACK_ORDER_RANDOM);
+			deadbeef->conf_set_int("playback.order", PLAYBACK_ORDER_SHUFFLE_TRACKS);
 		} else {
 			deadbeef->conf_set_int("playback.order", PLAYBACK_ORDER_LINEAR);
 		}
