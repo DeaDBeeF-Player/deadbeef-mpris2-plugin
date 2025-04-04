@@ -74,19 +74,20 @@ static int onConnect() {
         debug("artwork plugin not detected... album art support disabled\n");
     }
 
-    DB_plugin_t *hotkeysPlugin = mprisData.deadbeef->plug_get_for_id ("hotkeys");
     DB_plugin_t **plugins = mprisData.deadbeef->plug_get_list();
     for (int i = 0; plugins[i]; i++) {
-        for (DB_plugin_action_t *dbaction = plugins[i]->get_actions(NULL); dbaction; dbaction = dbaction->next) {
-            if (strcmp(dbaction->name, "prev_or_restart") == 0) {
-                debug("prev_or_restart command detected... previous or restart support enabled\n");
-                mprisData.prevOrRestart = dbaction;
+        if (plugins[i]->get_actions != NULL) {
+            for (DB_plugin_action_t *dbaction = plugins[i]->get_actions(NULL); dbaction; dbaction = dbaction->next) {
+                if (strcmp(dbaction->name, "prev_or_restart") == 0) {
+                    debug("prev_or_restart command detected... previous or restart support enabled\n");
+                    mprisData.prevOrRestart = dbaction;
+                    break;
+                }
+            }
+
+            if (mprisData.prevOrRestart != NULL) {
                 break;
             }
-        }
-
-        if (mprisData.prevOrRestart != NULL) {
-            break;
         }
     }
 
