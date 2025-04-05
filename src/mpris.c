@@ -75,26 +75,25 @@ static int onConnect() {
 	}
 
 	DB_plugin_t *hotkeysPlugin = mprisData.deadbeef->plug_get_for_id ("hotkeys");
-
-	if (hotkeysPlugin != NULL) {
-		debug("hotkeys plugin detected...\n");
-
-		DB_plugin_action_t *dbaction;
-
-		for (dbaction = hotkeysPlugin->get_actions (NULL); dbaction; dbaction = dbaction->next) {
+    DB_plugin_t **plugins = mprisData.deadbeef->plug_get_list();
+    for (int i = 0; plugins[i]; i++) {
+		for (DB_plugin_action_t *dbaction = plugins[i]->get_actions(NULL); dbaction; dbaction = dbaction->next) {
 			if (strcmp(dbaction->name, "prev_or_restart") == 0) {
 				debug("prev_or_restart command detected... previous or restart support enabled\n");
 				mprisData.prevOrRestart = dbaction;
 				break;
 			}
-		}
+        }
 
-		if (mprisData.prevOrRestart == NULL) {
-			debug("prev_or_restart command not detected... previous or restart support disabled\n");
-		}
-	} else {
-		debug("hotkeys plugin not detected... previous or restart support disabled\n");
-	}
+        if (mprisData.prevOrRestart != NULL) {
+            break;
+        }
+    }
+
+
+    if (mprisData.prevOrRestart == NULL) {
+        debug("prev_or_restart command not detected... previous or restart support disabled\n");
+    }
 
 	return 0;
 }
