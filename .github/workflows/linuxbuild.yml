@@ -25,7 +25,7 @@ jobs:
         ./configure
         make
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: mpris-linux-x86_64
         path: .libs/mpris.so
