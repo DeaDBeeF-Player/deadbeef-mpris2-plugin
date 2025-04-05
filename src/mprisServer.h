@@ -14,19 +14,19 @@
 #define PREVIOUS_ACTION_PREV_OR_RESTART 1
 
 typedef struct ArtworkData_s {
-	ddb_artwork_plugin_t *artwork;
-	int64_t source_id;
-	DB_playItem_t *track;
-	char *path;
-	char *default_path;
+    ddb_artwork_plugin_t *artwork;
+    int64_t source_id;
+    DB_playItem_t *track;
+    char *path;
+    char *default_path;
 } ArtworkData_t;
 
 struct MprisData {
-	DB_functions_t *deadbeef;
-	ArtworkData_t artworkData;
-	DB_plugin_action_t *prevOrRestart;
-	GDBusNodeInfo *gdbusNodeInfo;
-	int previousAction;
+    DB_functions_t *deadbeef;
+    ArtworkData_t artworkData;
+    DB_plugin_action_t *prevOrRestart;
+    GDBusNodeInfo *gdbusNodeInfo;
+    int previousAction;
 };
 
 void* startServer(void*);
