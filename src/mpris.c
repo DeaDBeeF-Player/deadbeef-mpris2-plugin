@@ -27,6 +27,9 @@ static int onStart() {
 }
 
 static int onStop() {
+    debug("Emitting stop event on player exit\n");
+    emitPlaybackStatusChanged(OUTPUT_STATE_STOPPED, &mprisData);
+    
     stopServer();
 
 #if (GLIB_MAJOR_VERSION <= 2 && GLIB_MINOR_VERSION < 32)
