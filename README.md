@@ -1,24 +1,27 @@
-MPRISv2 plugin for the DeaDBeeF music player
-============================================
+# MPRISv2 plugin for the DeaDBeeF music player
 
-===== About ======
+## Archived
+
+This plugin is obsolete, starting from DeaDBeeF 1.10.2 it's shipped as part of the app.
+
+## About
 This plugin aims to implement the MPRISv2[1] for DeaDBeeF.
 
 The original[2] MPRIS plugin for DeaDBeef does not work anymore and seems
 to be orphaned. The original plugin supported MPRISv1 AND MPRISv2. This plugin
 will only support version two.
 
-1: http://specifications.freedesktop.org/mpris-spec/latest/
-2: http://kernelhcy.github.io/DeaDBeeF-MPRIS-plugin/
+1. http://specifications.freedesktop.org/mpris-spec/latest/
+2. http://kernelhcy.github.io/DeaDBeeF-MPRIS-plugin/
 
-===== What is missing =====
+## What is missing
 - The whole optional "org.mpris.MediaPlayer2.TrackList" interface.
 - The whole optional "org.mpris.MediaPlayer2.Playlists" interface.
 - The optional "Fullscreen" property of the org.mpris.MediaPlayer2 interface.
 - The optional "CanSetFullscreen" property of the org.mpris.MediaPlayer2
 	interface.
 
-===== How to install =====
+## How to install
 - git clone this repository, or download and uncompress the latest release from Releases
   section on github
 - cd deadbeef-mpris2-plugin
@@ -27,5 +30,5 @@ will only support version two.
 - make install
 
 
-===== Contributing =====
+## Contributing
 Just use common sense...
